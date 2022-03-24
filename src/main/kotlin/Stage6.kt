@@ -1,86 +1,59 @@
 class CoffeeMachine() {
-    private val espresso = listOf<Int>(250, 0, 16, 4)
-    private val latte = listOf<Int>(350, 75, 20, 7)
-    private val cappuccino = listOf<Int>(200, 100, 12, 6)
-    var hasMilk = 540
-    var hasWater = 400
-    var hasBeans = 120
-    var hasCups = 9
-    var money = 550
+    private var hasMilk = 540
+    private var hasWater = 400
+    private var hasBeans = 120
+    private var hasCups = 9
+    private var money = 550
+
+    private fun checkResources(water: Int = 0, milk: Int = 0, beans: Int = 0): Boolean {
+        when {
+            water > hasWater -> println("Sorry, not enough water!")
+            milk > hasMilk -> println("Sorry, not enough milk!")
+            beans > hasBeans -> println("Sorry, not enough coffee beans!")
+            hasCups <= 0 -> println("Sorry, not enough cups!")
+            else -> {
+                println("I have enough resources, making you a coffee!")
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun makeCoffee(type: String = "espresso") {
+        hasCups -= 1
+        when (type) {
+            "espresso" -> {
+                hasWater -= 250
+                hasBeans -= 16
+            }
+            "latte" -> {
+                hasWater -= 350
+                hasMilk -= 75
+                hasBeans -= 20
+            }
+            "cappuccino" ->{
+                hasWater -= 200
+                hasMilk -= 100
+                hasBeans -= 12
+            }
+        }
+    }
 
     fun buy(choose: String = "1") {
         when (choose) {
-            "1" -> {
-                if (hasWater > espresso[0] || hasWater == espresso[0]) {
-                    if (hasMilk > espresso[1] || hasMilk == espresso[1]) {
-                        if (hasBeans > espresso[2] || hasBeans == espresso[2]) {
-                            if (hasCups > 0) {
-                                println("I have enough resources, making you a coffee!")
-                                hasCups -= 1
-                                hasWater -= espresso[0]
-                                hasMilk -= espresso[1]
-                                hasBeans -= espresso[2]
-                                money += espresso[3]
-                            } else {
-                                println("Sorry, not enough cups!")
-                            }
-                        } else {
-                            println("Sorry, not enough coffee beans!")
-                        }
-                    } else {
-                        println("Sorry, not enough milk!")
-                    }
-                } else {
-                    println("Sorry, not enough water!")
-                }
+            "1" -> if (checkResources(water = 250, beans = 16)) {
+                makeCoffee("espresso")
+                money += 4
             }
-            "2" -> {
-                if (hasWater > latte[0] || hasWater == latte[0]) {
-                    if (hasMilk > latte[1] || hasMilk == latte[1]) {
-                        if (hasBeans > latte[2] || hasBeans == latte[2]) {
-                            if (hasCups > 0) {
-                                println("I have enough resources, making you a coffee!")
-                                hasCups -= 1
-                                hasWater -= latte[0]
-                                hasMilk -= latte[1]
-                                hasBeans -= latte[2]
-                                money += latte[3]
-                            } else {
-                                println("Sorry, not enough cups!")
-                            }
-                        } else {
-                            println("Sorry, not enough coffee beans!")
-                        }
-                    } else {
-                        println("Sorry, not enough milk!")
-                    }
-                } else {
-                    println("Sorry, not enough water!")
-                }
+
+            "2" -> if (checkResources(water = 350, milk = 75, beans = 20)) {
+                makeCoffee("latte")
+                money += 7
             }
-            "3" -> {
-                if (hasWater > cappuccino[0] || hasWater == cappuccino[0]) {
-                    if (hasMilk > cappuccino[1] || hasMilk == cappuccino[1]) {
-                        if (hasBeans > cappuccino[2] || hasBeans == cappuccino[2]) {
-                            if (hasCups > 0) {
-                                println("I have enough resources, making you a coffee!")
-                                hasCups -= 1
-                                hasWater -= cappuccino[0]
-                                hasMilk -= cappuccino[1]
-                                hasBeans -= cappuccino[2]
-                                money += cappuccino[3]
-                            } else {
-                                println("Sorry, not enough cups!")
-                            }
-                        } else {
-                            println("Sorry, not enough coffee beans!")
-                        }
-                    } else {
-                        println("Sorry, not enough milk!")
-                    }
-                } else {
-                    println("Sorry, not enough water!")
-                }
+
+            "3" -> if (checkResources(water = 200, milk = 100, beans = 12)) {
+                makeCoffee("cappuccino")
+                money += 6
             }
         }
 
@@ -106,7 +79,7 @@ class CoffeeMachine() {
         println("\nThe coffee machine has:")
         println("$hasWater ml of water")
         println("$hasMilk ml of milk")
-        println("$hasBeans  g of coffee beans")
+        println("$hasBeans g of coffee beans")
         println("$hasCups disposable cups")
         println("$$money of money")
     }
@@ -114,9 +87,8 @@ class CoffeeMachine() {
 
 fun main() {
     val machine = CoffeeMachine()
-    var goOn = true
     var operation: String
-    while (goOn) {
+    while (true) {
         print("Write action (buy, fill, take, remaining, exit): > ")
         operation = readln()
         when (operation) {
@@ -127,7 +99,7 @@ fun main() {
             "fill" -> machine.fill()
             "take" -> machine.take()
             "remaining" -> machine.remaining()
-            "exit" -> goOn = false
+            "exit" -> break
         }
         println("")
     }
